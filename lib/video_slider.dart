@@ -9,19 +9,50 @@ import 'store/actions.dart';
 import 'store/state.dart';
 import 'video_player.dart';
 
-class VideoSliderWidget extends StatelessWidget {
+class VideoSliderWidget extends StatefulWidget {
   final Store<VideoSliderState, VideoSliderStateBuilder, CounterActions> store;
 
-  VideoSliderWidget(this.store);
+  VideoSliderWidget({Key key, @required this.store});
 
-  VideoPlayerController _createController(String url) {
-    if (url.startsWith("http")) return VideoPlayerController.network(url);
-    return VideoPlayerController.asset(url);
+  @override
+  _VideoSliderWidgetState createState() => _VideoSliderWidgetState();
+}
+
+class _VideoSliderWidgetState extends State<VideoSliderWidget> {
+  Map<String, VideoPlayerController> controllers;
+
+  VideoPlayerController _getController(String url) {
+    if (controllers.containsKey(url)) return controllers[url];
+
+    final newController = (url.startsWith("http"))
+        ? VideoPlayerController.network(url)
+        : VideoPlayerController.asset(url);
+    newController.addListener(() => widget.store.actions
+        .controllerChanged(ControllerChanged(url, newController.value)));
+
+    newController.setLooping(true);
+    //newController.initialize();
+
+    controllers[url] = newController;
+    return newController;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    controllers = new Map<String, VideoPlayerController>();
+  }
+
+  @override
+  void dispose() {
+    controllers.values.forEach((c) => c.dispose());
+
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) => new ReduxProvider(
-        store: store,
+        store: widget.store,
         child: new StoreConnection<VideoSliderState, CounterActions,
             VideoSliderState>(
           connect: (state) => state,
@@ -29,22 +60,24 @@ class VideoSliderWidget extends StatelessWidget {
               CounterActions actions) {
             return Column(
               children: <Widget>[
-                store.state.videos.length > 0
+                state.controllers.length > 0
                     ? CarouselSlider(
                         height: 400.0,
                         enableInfiniteScroll: false,
                         onPageChanged: (index) {
                           actions.setPage(index);
                         },
-                        items: store.state.videos.map((v) {
+                        items: state.controllers.map((c) {
+                          print("${c.url}: ${c.isPlaying}");
                           return Builder(
                             builder: (BuildContext context) {
                               return Column(
+                                //key: Key(c.url),
                                 children: <Widget>[
                                   VideoPlayerWidget(
-                                      controller: _createController(v),
-                                      autoPlay: v == store.state.videos.first,
-                                      changesStream: store.nextState),
+                                      controller: _getController(c.url),
+                                      isPlaing: c.isPlaying,
+                                      volume: c.volume),
                                 ],
                               );
                             },
@@ -55,17 +88,12 @@ class VideoSliderWidget extends StatelessWidget {
                         height: 400,
                         child: Center(child: CircularProgressIndicator())),
                 SwitchListTile(
-                  title: const Text('autoplay'),
-                  value: store.state.isPlaying,
-                  onChanged: (c) => actions.setIsPlaying(c),
-                ),
-                SwitchListTile(
                   title: const Text('mute'),
-                  value: store.state.isMuted,
+                  value: state.isMuted,
                   onChanged: (c) => actions.setIsMuted(c),
                 ),
                 Text(
-                  'Current page: ${store.state.currentPage}',
+                  'Current page: ${state.currentPage}',
                   style: TextStyle(fontSize: 16.0),
                 )
               ],

@@ -1,20 +1,17 @@
-import 'dart:async';
-
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:videoslider/store/state.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
   final VideoPlayerController controller;
-  final bool autoPlay;
-  final Stream<VideoSliderState> changesStream;
+  final bool isPlaing;
+  final double volume;
 
   VideoPlayerWidget(
       {Key key,
       @required this.controller,
-      @required this.changesStream,
-      this.autoPlay})
+      @required this.isPlaing,
+      this.volume})
       : super(key: key);
 
   @override
@@ -22,21 +19,15 @@ class VideoPlayerWidget extends StatefulWidget {
 }
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
-  VideoPlayerController _controller;
   ChewieController _chewieController;
-  StreamSubscription subcsribtion;
-  double _lastVolume = 50;
 
   @override
   void initState() {
     super.initState();
 
-    _controller = widget.controller;
-
     _chewieController = ChewieController(
-      videoPlayerController: _controller,
+      videoPlayerController: widget.controller,
       autoInitialize: true,
-      autoPlay: widget.autoPlay,
       looping: true,
       showControls: false,
       errorBuilder: (context, errorMessage) {
@@ -49,29 +40,16 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       },
     );
 
-    subcsribtion =
-        widget.changesStream.listen((change) => onStoreStateChange(change));
-    _controller.addListener(() {
-      if (_controller.value.volume > 0) _lastVolume = _controller.value.volume;
-    });
-  }
+    _chewieController.setVolume(widget.volume);
 
-  void onStoreStateChange(VideoSliderState change) {
-    _chewieController.pause();
-    _chewieController.setVolume(change.isMuted ? 0 : _lastVolume);
-
-    String v = change.videos.firstWhere(
-        (v) => change.videos[change.currentPage] == _controller.dataSource,
-        orElse: () => null);
-    if (v != null) {
-      if (change.isPlaying) _chewieController.play();
-    }
+    if (widget.isPlaing)
+      _chewieController.play();
+    else
+      _chewieController.pause();
   }
 
   @override
   void dispose() {
-    subcsribtion?.cancel();
-    _controller.dispose();
     _chewieController.dispose();
 
     super.dispose();

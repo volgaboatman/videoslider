@@ -52,7 +52,7 @@ class VideoPlayerAppState extends State<VideoPlayerApp> {
           appBar: AppBar(
             title: Text('Video Carousel'),
           ),
-          body: VideoSliderWidget(this.store),
+          body: VideoSliderWidget(store: this.store),
         ));
   }
 }

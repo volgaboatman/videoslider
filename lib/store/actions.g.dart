@@ -13,6 +13,9 @@ class _$CounterActions extends CounterActions {
   factory _$CounterActions() => new _$CounterActions._();
   _$CounterActions._() : super._();
 
+  final ActionDispatcher<ControllerChanged> controllerChanged =
+      new ActionDispatcher<ControllerChanged>(
+          'CounterActions-controllerChanged');
   final ActionDispatcher<void> fetchVideoList =
       new ActionDispatcher<void>('CounterActions-fetchVideoList');
   final ActionDispatcher<List<String>> loaded =
@@ -26,6 +29,7 @@ class _$CounterActions extends CounterActions {
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
+    controllerChanged.setDispatcher(dispatcher);
     fetchVideoList.setDispatcher(dispatcher);
     loaded.setDispatcher(dispatcher);
     setIsPlaying.setDispatcher(dispatcher);
@@ -35,6 +39,8 @@ class _$CounterActions extends CounterActions {
 }
 
 class CounterActionsNames {
+  static final ActionName<ControllerChanged> controllerChanged =
+      new ActionName<ControllerChanged>('CounterActions-controllerChanged');
   static final ActionName<void> fetchVideoList =
       new ActionName<void>('CounterActions-fetchVideoList');
   static final ActionName<List<String>> loaded =
