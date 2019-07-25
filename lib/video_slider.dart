@@ -39,7 +39,7 @@ class _VideoSliderWidgetState extends State<VideoSliderWidget> {
       videoPlayerController: newController,
       autoInitialize: true,
       looping: true,
-      showControls: false,
+      showControls: true,
       errorBuilder: (context, errorMessage) {
         return Center(
           child: Text(
