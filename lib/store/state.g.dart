@@ -31,9 +31,6 @@ class _$VideoControllerStateSerializer
       'position',
       serializers.serialize(object.position,
           specifiedType: const FullType(double)),
-      'volume',
-      serializers.serialize(object.volume,
-          specifiedType: const FullType(double)),
       'isPlaying',
       serializers.serialize(object.isPlaying,
           specifiedType: const FullType(bool)),
@@ -60,10 +57,6 @@ class _$VideoControllerStateSerializer
           break;
         case 'position':
           result.position = serializers.deserialize(value,
-              specifiedType: const FullType(double)) as double;
-          break;
-        case 'volume':
-          result.volume = serializers.deserialize(value,
               specifiedType: const FullType(double)) as double;
           break;
         case 'isPlaying':
@@ -101,6 +94,9 @@ class _$VideoSliderStateSerializer
       'isLoading',
       serializers.serialize(object.isLoading,
           specifiedType: const FullType(bool)),
+      'initialVolume',
+      serializers.serialize(object.initialVolume,
+          specifiedType: const FullType(double)),
     ];
 
     return result;
@@ -136,6 +132,10 @@ class _$VideoSliderStateSerializer
           result.isLoading = serializers.deserialize(value,
               specifiedType: const FullType(bool)) as bool;
           break;
+        case 'initialVolume':
+          result.initialVolume = serializers.deserialize(value,
+              specifiedType: const FullType(double)) as double;
+          break;
       }
     }
 
@@ -149,25 +149,19 @@ class _$VideoControllerState extends VideoControllerState {
   @override
   final double position;
   @override
-  final double volume;
-  @override
   final bool isPlaying;
 
   factory _$VideoControllerState(
           [void Function(VideoControllerStateBuilder) updates]) =>
       (new VideoControllerStateBuilder()..update(updates)).build();
 
-  _$VideoControllerState._(
-      {this.url, this.position, this.volume, this.isPlaying})
+  _$VideoControllerState._({this.url, this.position, this.isPlaying})
       : super._() {
     if (url == null) {
       throw new BuiltValueNullFieldError('VideoControllerState', 'url');
     }
     if (position == null) {
       throw new BuiltValueNullFieldError('VideoControllerState', 'position');
-    }
-    if (volume == null) {
-      throw new BuiltValueNullFieldError('VideoControllerState', 'volume');
     }
     if (isPlaying == null) {
       throw new BuiltValueNullFieldError('VideoControllerState', 'isPlaying');
@@ -189,15 +183,13 @@ class _$VideoControllerState extends VideoControllerState {
     return other is VideoControllerState &&
         url == other.url &&
         position == other.position &&
-        volume == other.volume &&
         isPlaying == other.isPlaying;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(
-        $jc($jc($jc(0, url.hashCode), position.hashCode), volume.hashCode),
-        isPlaying.hashCode));
+    return $jf(
+        $jc($jc($jc(0, url.hashCode), position.hashCode), isPlaying.hashCode));
   }
 
   @override
@@ -205,7 +197,6 @@ class _$VideoControllerState extends VideoControllerState {
     return (newBuiltValueToStringHelper('VideoControllerState')
           ..add('url', url)
           ..add('position', position)
-          ..add('volume', volume)
           ..add('isPlaying', isPlaying))
         .toString();
   }
@@ -223,10 +214,6 @@ class VideoControllerStateBuilder
   double get position => _$this._position;
   set position(double position) => _$this._position = position;
 
-  double _volume;
-  double get volume => _$this._volume;
-  set volume(double volume) => _$this._volume = volume;
-
   bool _isPlaying;
   bool get isPlaying => _$this._isPlaying;
   set isPlaying(bool isPlaying) => _$this._isPlaying = isPlaying;
@@ -237,7 +224,6 @@ class VideoControllerStateBuilder
     if (_$v != null) {
       _url = _$v.url;
       _position = _$v.position;
-      _volume = _$v.volume;
       _isPlaying = _$v.isPlaying;
       _$v = null;
     }
@@ -261,7 +247,7 @@ class VideoControllerStateBuilder
   _$VideoControllerState build() {
     final _$result = _$v ??
         new _$VideoControllerState._(
-            url: url, position: position, volume: volume, isPlaying: isPlaying);
+            url: url, position: position, isPlaying: isPlaying);
     replace(_$result);
     return _$result;
   }
@@ -276,13 +262,19 @@ class _$VideoSliderState extends VideoSliderState {
   final bool isMuted;
   @override
   final bool isLoading;
+  @override
+  final double initialVolume;
 
   factory _$VideoSliderState(
           [void Function(VideoSliderStateBuilder) updates]) =>
       (new VideoSliderStateBuilder()..update(updates)).build();
 
   _$VideoSliderState._(
-      {this.currentPage, this.controllers, this.isMuted, this.isLoading})
+      {this.currentPage,
+      this.controllers,
+      this.isMuted,
+      this.isLoading,
+      this.initialVolume})
       : super._() {
     if (currentPage == null) {
       throw new BuiltValueNullFieldError('VideoSliderState', 'currentPage');
@@ -295,6 +287,9 @@ class _$VideoSliderState extends VideoSliderState {
     }
     if (isLoading == null) {
       throw new BuiltValueNullFieldError('VideoSliderState', 'isLoading');
+    }
+    if (initialVolume == null) {
+      throw new BuiltValueNullFieldError('VideoSliderState', 'initialVolume');
     }
   }
 
@@ -313,15 +308,18 @@ class _$VideoSliderState extends VideoSliderState {
         currentPage == other.currentPage &&
         controllers == other.controllers &&
         isMuted == other.isMuted &&
-        isLoading == other.isLoading;
+        isLoading == other.isLoading &&
+        initialVolume == other.initialVolume;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, currentPage.hashCode), controllers.hashCode),
-            isMuted.hashCode),
-        isLoading.hashCode));
+        $jc(
+            $jc($jc($jc(0, currentPage.hashCode), controllers.hashCode),
+                isMuted.hashCode),
+            isLoading.hashCode),
+        initialVolume.hashCode));
   }
 
   @override
@@ -330,7 +328,8 @@ class _$VideoSliderState extends VideoSliderState {
           ..add('currentPage', currentPage)
           ..add('controllers', controllers)
           ..add('isMuted', isMuted)
-          ..add('isLoading', isLoading))
+          ..add('isLoading', isLoading)
+          ..add('initialVolume', initialVolume))
         .toString();
   }
 }
@@ -357,6 +356,11 @@ class VideoSliderStateBuilder
   bool get isLoading => _$this._isLoading;
   set isLoading(bool isLoading) => _$this._isLoading = isLoading;
 
+  double _initialVolume;
+  double get initialVolume => _$this._initialVolume;
+  set initialVolume(double initialVolume) =>
+      _$this._initialVolume = initialVolume;
+
   VideoSliderStateBuilder();
 
   VideoSliderStateBuilder get _$this {
@@ -365,6 +369,7 @@ class VideoSliderStateBuilder
       _controllers = _$v.controllers?.toBuilder();
       _isMuted = _$v.isMuted;
       _isLoading = _$v.isLoading;
+      _initialVolume = _$v.initialVolume;
       _$v = null;
     }
     return this;
@@ -392,7 +397,8 @@ class VideoSliderStateBuilder
               currentPage: currentPage,
               controllers: controllers.build(),
               isMuted: isMuted,
-              isLoading: isLoading);
+              isLoading: isLoading,
+              initialVolume: initialVolume);
     } catch (_) {
       String _$failedField;
       try {

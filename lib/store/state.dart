@@ -14,12 +14,10 @@ abstract class VideoControllerState
   factory VideoControllerState([updates(VideoControllerStateBuilder b)]) =>
       _$VideoControllerState((b) => b
         ..position = 0
-        ..volume = 0
         ..url = "");
 
   String get url;
   double get position;
-  double get volume;
   bool get isPlaying;
 }
 
@@ -36,10 +34,14 @@ abstract class VideoSliderState
         ..isMuted = false
         ..controllers = ListBuilder<VideoControllerState>([])
         ..currentPage = 0
+        ..initialVolume = 50
         ..update(updates));
 
   int get currentPage;
   BuiltList<VideoControllerState> get controllers;
   bool get isMuted;
   bool get isLoading;
+  double get initialVolume;
+
+  double get volume => this.isMuted ? 0 : this.initialVolume;
 }

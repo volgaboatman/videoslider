@@ -26,6 +26,11 @@ class _TestStore extends Store<VideoSliderState, VideoSliderStateBuilder,
     this.actions.setPage(pageIdx);
     return this;
   }
+
+  _TestStore setIsMuted(bool muted) {
+    this.actions.setIsMuted(muted);
+    return this;
+  }
 }
 
 main() {
@@ -49,6 +54,14 @@ main() {
       expect(store.state.controllers.length, 3);
       expect(store.state.controllers[0].isPlaying, false);
       expect(store.state.controllers[2].isPlaying, true);
+    });
+
+    test('should be muted or not', () {
+      final store = new _TestStore().load().setIsMuted(true);
+
+      expect(store.state.volume, 0);
+      store.setIsMuted(false);
+      expect(store.state.volume > 0, true);
     });
   });
 }

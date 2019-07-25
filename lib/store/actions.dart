@@ -19,7 +19,6 @@ abstract class VideoSliderActions extends ReduxActions {
   ActionDispatcher<ControllerChanged> get controllerChanged;
   ActionDispatcher<void> get fetchVideoList;
   ActionDispatcher<List<String>> get loaded;
-  ActionDispatcher<bool> get setIsPlaying;
   ActionDispatcher<bool> get setIsMuted;
   ActionDispatcher<int> get setPage;
 }

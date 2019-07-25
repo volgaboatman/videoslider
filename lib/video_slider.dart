@@ -1,5 +1,6 @@
 import 'package:built_redux/built_redux.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_built_redux/flutter_built_redux.dart';
 import 'package:flutter/material.dart' hide Builder, ActionDispatcher;
@@ -20,9 +21,9 @@ class VideoSliderWidget extends StatefulWidget {
 }
 
 class _VideoSliderWidgetState extends State<VideoSliderWidget> {
-  Map<String, VideoPlayerController> controllers;
+  Map<String, ChewieController> controllers;
 
-  VideoPlayerController _getController(String url) {
+  ChewieController _getController(String url) {
     if (controllers.containsKey(url)) return controllers[url];
 
     final newController = (url.startsWith("http"))
@@ -34,19 +35,37 @@ class _VideoSliderWidgetState extends State<VideoSliderWidget> {
     newController.setLooping(true);
     //newController.initialize();
 
-    controllers[url] = newController;
-    return newController;
+    final chewie = ChewieController(
+      videoPlayerController: newController,
+      autoInitialize: true,
+      looping: true,
+      showControls: false,
+      errorBuilder: (context, errorMessage) {
+        return Center(
+          child: Text(
+            errorMessage,
+            style: TextStyle(color: Colors.white),
+          ),
+        );
+      },
+    );
+
+    controllers[url] = chewie;
+    return chewie;
   }
 
   @override
   void initState() {
     super.initState();
-    controllers = new Map<String, VideoPlayerController>();
+    controllers = new Map<String, ChewieController>();
   }
 
   @override
   void dispose() {
-    controllers.values.forEach((c) => c.dispose());
+    controllers.values.forEach((c) {
+      c.videoPlayerController.dispose();
+      c.dispose();
+    });
 
     super.dispose();
   }
@@ -69,16 +88,17 @@ class _VideoSliderWidgetState extends State<VideoSliderWidget> {
                           actions.setPage(index);
                         },
                         items: state.controllers.map((c) {
-                          print("${c.url}: ${c.isPlaying}");
                           return Builder(
                             builder: (BuildContext context) {
                               return Column(
-                                //key: Key(c.url),
+                                key: Key(c.url +
+                                    c.isPlaying.toString() +
+                                    state.volume.toString()),
                                 children: <Widget>[
                                   VideoPlayerWidget(
                                       controller: _getController(c.url),
                                       isPlaing: c.isPlaying,
-                                      volume: c.volume),
+                                      volume: state.volume),
                                 ],
                               );
                             },

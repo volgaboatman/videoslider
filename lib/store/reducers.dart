@@ -14,12 +14,8 @@ ReducerBuilder<VideoSliderState, VideoSliderStateBuilder> reducerBuilder =
             .map<VideoControllerState>((v) => (VideoControllerStateBuilder()
                   ..url = v
                   ..isPlaying = v == a.payload.first
-                  ..position = 0
-                  ..volume = 50)
+                  ..position = 0)
                 .build()));
-      })
-      ..add(VideoSliderActionsNames.setIsPlaying, (s, a, b) {
-//        setIsPlaying(s, a.payload);
       })
       ..add(VideoSliderActionsNames.setIsMuted, (s, a, b) {
         b.isMuted = a.payload;

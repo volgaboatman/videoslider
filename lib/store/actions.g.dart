@@ -20,8 +20,6 @@ class _$VideoSliderActions extends VideoSliderActions {
       new ActionDispatcher<void>('VideoSliderActions-fetchVideoList');
   final ActionDispatcher<List<String>> loaded =
       new ActionDispatcher<List<String>>('VideoSliderActions-loaded');
-  final ActionDispatcher<bool> setIsPlaying =
-      new ActionDispatcher<bool>('VideoSliderActions-setIsPlaying');
   final ActionDispatcher<bool> setIsMuted =
       new ActionDispatcher<bool>('VideoSliderActions-setIsMuted');
   final ActionDispatcher<int> setPage =
@@ -32,7 +30,6 @@ class _$VideoSliderActions extends VideoSliderActions {
     controllerChanged.setDispatcher(dispatcher);
     fetchVideoList.setDispatcher(dispatcher);
     loaded.setDispatcher(dispatcher);
-    setIsPlaying.setDispatcher(dispatcher);
     setIsMuted.setDispatcher(dispatcher);
     setPage.setDispatcher(dispatcher);
   }
@@ -45,8 +42,6 @@ class VideoSliderActionsNames {
       new ActionName<void>('VideoSliderActions-fetchVideoList');
   static final ActionName<List<String>> loaded =
       new ActionName<List<String>>('VideoSliderActions-loaded');
-  static final ActionName<bool> setIsPlaying =
-      new ActionName<bool>('VideoSliderActions-setIsPlaying');
   static final ActionName<bool> setIsMuted =
       new ActionName<bool>('VideoSliderActions-setIsMuted');
   static final ActionName<int> setPage =
