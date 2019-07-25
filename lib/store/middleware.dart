@@ -27,7 +27,7 @@ MiddlewareHandler<VideoSliderState, VideoSliderStateBuilder, VideoSliderActions,
     next(action);
 
     if (api.state.isLoading) {
-      new Timer(Duration(seconds: 2), () {
+      new Timer(Duration(seconds: 5), () {
         api.actions.loaded([
           'assets/butterfly.mp4',
           'https://flutter.github.io/assets-for-api-docs//assets/videos/bee.mp4',
