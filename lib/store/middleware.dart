@@ -9,18 +9,18 @@ import 'package:built_redux/built_redux.dart';
 import 'actions.dart';
 import 'state.dart';
 
-Middleware<VideoSliderState, VideoSliderStateBuilder, CounterActions>
-    createStoreTodosMiddleware() {
+Middleware<VideoSliderState, VideoSliderStateBuilder, VideoSliderActions>
+    createVideoListMiddleware() {
   return (MiddlewareBuilder<VideoSliderState, VideoSliderStateBuilder,
-          CounterActions>()
-        ..add(CounterActionsNames.fetchVideoList, doFetchVideoList()))
+          VideoSliderActions>()
+        ..add(VideoSliderActionsNames.fetchVideoList, doFetchVideoList()))
       .build();
 }
 
-MiddlewareHandler<VideoSliderState, VideoSliderStateBuilder, CounterActions,
+MiddlewareHandler<VideoSliderState, VideoSliderStateBuilder, VideoSliderActions,
     void> doFetchVideoList() {
   return (MiddlewareApi<VideoSliderState, VideoSliderStateBuilder,
-              CounterActions>
+              VideoSliderActions>
           api,
       ActionHandler next,
       Action<void> action) {

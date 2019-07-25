@@ -10,7 +10,8 @@ import 'store/state.dart';
 import 'video_player.dart';
 
 class VideoSliderWidget extends StatefulWidget {
-  final Store<VideoSliderState, VideoSliderStateBuilder, CounterActions> store;
+  final Store<VideoSliderState, VideoSliderStateBuilder, VideoSliderActions>
+      store;
 
   VideoSliderWidget({Key key, @required this.store});
 
@@ -53,11 +54,11 @@ class _VideoSliderWidgetState extends State<VideoSliderWidget> {
   @override
   Widget build(BuildContext context) => new ReduxProvider(
         store: widget.store,
-        child: new StoreConnection<VideoSliderState, CounterActions,
+        child: new StoreConnection<VideoSliderState, VideoSliderActions,
             VideoSliderState>(
           connect: (state) => state,
           builder: (BuildContext context, VideoSliderState state,
-              CounterActions actions) {
+              VideoSliderActions actions) {
             return Column(
               children: <Widget>[
                 state.controllers.length > 0

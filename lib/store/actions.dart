@@ -12,9 +12,9 @@ class ControllerChanged {
   ControllerChanged(this.url, this.value);
 }
 
-abstract class CounterActions extends ReduxActions {
-  factory CounterActions() => new _$CounterActions();
-  CounterActions._();
+abstract class VideoSliderActions extends ReduxActions {
+  factory VideoSliderActions() => new _$VideoSliderActions();
+  VideoSliderActions._();
 
   ActionDispatcher<ControllerChanged> get controllerChanged;
   ActionDispatcher<void> get fetchVideoList;

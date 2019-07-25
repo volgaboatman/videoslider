@@ -15,12 +15,12 @@ void main() {
 
 class VideoPlayerApp extends StatefulWidget {
   final store =
-      Store<VideoSliderState, VideoSliderStateBuilder, CounterActions>(
+      Store<VideoSliderState, VideoSliderStateBuilder, VideoSliderActions>(
     reducerBuilder.build(),
     new VideoSliderState(),
-    new CounterActions(),
+    new VideoSliderActions(),
     middleware: [
-      createStoreTodosMiddleware(),
+      createVideoListMiddleware(),
     ],
   );
 
@@ -31,7 +31,7 @@ class VideoPlayerApp extends StatefulWidget {
 }
 
 class VideoPlayerAppState extends State<VideoPlayerApp> {
-  Store<VideoSliderState, VideoSliderStateBuilder, CounterActions> store;
+  Store<VideoSliderState, VideoSliderStateBuilder, VideoSliderActions> store;
 
   VideoPlayerAppState();
 
