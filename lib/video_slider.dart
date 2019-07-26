@@ -33,13 +33,15 @@ class _VideoSliderWidgetState extends State<VideoSliderWidget> {
         .controllerChanged(ControllerChanged(url, newController.value)));
 
     newController.setLooping(true);
-    //newController.initialize();
+    newController.addListener(
+        () => widget.store.actions.setIsMuted(newController.value.volume == 0));
 
     final chewie = ChewieController(
       videoPlayerController: newController,
       autoInitialize: true,
       looping: true,
       showControls: true,
+      allowFullScreen: false,
       errorBuilder: (context, errorMessage) {
         return Center(
           child: Text(
@@ -71,55 +73,57 @@ class _VideoSliderWidgetState extends State<VideoSliderWidget> {
   }
 
   @override
-  Widget build(BuildContext context) => new ReduxProvider(
+  Widget build(BuildContext context) => ReduxProvider(
         store: widget.store,
-        child: new StoreConnection<VideoSliderState, VideoSliderActions,
+        child: StoreConnection<VideoSliderState, VideoSliderActions,
             VideoSliderState>(
           connect: (state) => state,
           builder: (BuildContext context, VideoSliderState state,
               VideoSliderActions actions) {
-            return Column(
-              children: <Widget>[
-                state.controllers.length > 0
-                    ? CarouselSlider(
-                        height: 400.0,
-                        enableInfiniteScroll: false,
-                        onPageChanged: (index) {
-                          actions.setPage(index);
-                        },
-                        items: state.controllers.map((c) {
-                          return Builder(
-                            builder: (BuildContext context) {
-                              return Column(
-                                key: Key(c.url +
-                                    c.isPlaying.toString() +
-                                    state.volume.toString()),
-                                children: <Widget>[
-                                  VideoPlayerWidget(
-                                      controller: _getController(c.url),
-                                      isPlaing: c.isPlaying,
-                                      volume: state.volume),
-                                ],
-                              );
-                            },
-                          );
-                        }).toList(),
-                      )
-                    : Container(
-                        height: 400,
-                        child: Center(child: CircularProgressIndicator())),
-                SwitchListTile(
-                  title: const Text('mute'),
-                  value: state.isMuted,
-                  onChanged: (c) => actions.setIsMuted(c),
-                ),
-                Text(
-                  'Current page: ${state.currentPage}',
-                  style: TextStyle(fontSize: 16.0),
-                )
-              ],
-            );
+            return state.isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : buildSlider(actions, state);
           },
         ),
       );
+
+  Column buildSlider(VideoSliderActions actions, VideoSliderState state) {
+    return Column(
+      children: [
+        CarouselSlider(
+          enableInfiniteScroll: false,
+          onPageChanged: (index) {
+            actions.setPage(index);
+          },
+          items: state.controllers.map((c) {
+            return Builder(
+              builder: (BuildContext context) {
+                return Column(
+                  key: Key(
+                      c.url + c.isPlaying.toString() + state.volume.toString()),
+                  children: <Widget>[
+                    VideoPlayerWidget(
+                        controller: _getController(c.url),
+                        isPlaing: c.isPlaying,
+                        volume: state.volume),
+                  ],
+                );
+              },
+            );
+          }).toList(),
+        ),
+        SwitchListTile(
+          title: const Text('mute'),
+          value: state.isMuted,
+          onChanged: (c) => actions.setIsMuted(c),
+        ),
+        Text(
+          'Current page: ${state.currentPage}',
+          style: TextStyle(fontSize: 16.0),
+        )
+      ],
+    );
+  }
 }

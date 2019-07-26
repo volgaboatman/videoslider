@@ -34,7 +34,7 @@ abstract class VideoSliderState
         ..isMuted = false
         ..controllers = ListBuilder<VideoControllerState>([])
         ..currentPage = 0
-        ..initialVolume = 50
+        ..initialVolume = 1
         ..update(updates));
 
   int get currentPage;
