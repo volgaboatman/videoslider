@@ -10,12 +10,15 @@ ReducerBuilder<VideoSliderState, VideoSliderStateBuilder> reducerBuilder =
     new ReducerBuilder<VideoSliderState, VideoSliderStateBuilder>()
       ..add(VideoSliderActionsNames.loaded, (s, a, b) {
         b.isLoading = false;
-        b.controllers = ListBuilder<VideoControllerState>(a.payload
-            .map<VideoControllerState>((v) => (VideoControllerStateBuilder()
-                  ..url = v
-                  ..isPlaying = v == a.payload.first
-                  ..position = 0)
-                .build()));
+        b.controllers = ListBuilder<VideoControllerState>();
+        for (int i = 0; i < a.payload.length; i++) {
+          b.controllers.add((VideoControllerStateBuilder()
+                ..id = i
+                ..url = a.payload[i]
+                ..isPlaying = i == 0
+                ..position = 0)
+              .build());
+        }
       })
       ..add(VideoSliderActionsNames.setIsMuted, (s, a, b) {
         b.isMuted = a.payload;

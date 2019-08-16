@@ -18,7 +18,7 @@ class _TestStore extends Store<VideoSliderState, VideoSliderStateBuilder,
         );
 
   _TestStore load() {
-    this.actions.loaded(['1', '2', '3']);
+    this.actions.loaded(['1', '2', '2', '3']);
     return this;
   }
 
@@ -44,16 +44,23 @@ main() {
       final store = new _TestStore().load();
 
       expect(store.state.isLoading, false);
-      expect(store.state.controllers.length, 3);
-      expect(store.state.controllers[0].isPlaying, true);
+      expect(store.state.controllers.length, 4);
+      for (int i = 0; i < store.state.controllers.length; i++) {
+        // играет только первый
+        expect(store.state.controllers[i].isPlaying, i == 0);
+        // id присвоился
+        expect(store.state.controllers[i].id, i);
+      }
     });
 
     test('should start playing', () {
       final store = new _TestStore().load().setPage(2);
 
-      expect(store.state.controllers.length, 3);
+      expect(store.state.controllers.length, 4);
       expect(store.state.controllers[0].isPlaying, false);
+      expect(store.state.controllers[1].isPlaying, false);
       expect(store.state.controllers[2].isPlaying, true);
+      expect(store.state.controllers[3].isPlaying, false);
     });
 
     test('should be muted or not', () {

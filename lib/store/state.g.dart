@@ -26,6 +26,8 @@ class _$VideoControllerStateSerializer
       Serializers serializers, VideoControllerState object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
       'url',
       serializers.serialize(object.url, specifiedType: const FullType(String)),
       'position',
@@ -51,6 +53,10 @@ class _$VideoControllerStateSerializer
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
         case 'url':
           result.url = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
@@ -145,6 +151,8 @@ class _$VideoSliderStateSerializer
 
 class _$VideoControllerState extends VideoControllerState {
   @override
+  final int id;
+  @override
   final String url;
   @override
   final double position;
@@ -155,8 +163,11 @@ class _$VideoControllerState extends VideoControllerState {
           [void Function(VideoControllerStateBuilder) updates]) =>
       (new VideoControllerStateBuilder()..update(updates)).build();
 
-  _$VideoControllerState._({this.url, this.position, this.isPlaying})
+  _$VideoControllerState._({this.id, this.url, this.position, this.isPlaying})
       : super._() {
+    if (id == null) {
+      throw new BuiltValueNullFieldError('VideoControllerState', 'id');
+    }
     if (url == null) {
       throw new BuiltValueNullFieldError('VideoControllerState', 'url');
     }
@@ -181,6 +192,7 @@ class _$VideoControllerState extends VideoControllerState {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is VideoControllerState &&
+        id == other.id &&
         url == other.url &&
         position == other.position &&
         isPlaying == other.isPlaying;
@@ -188,13 +200,15 @@ class _$VideoControllerState extends VideoControllerState {
 
   @override
   int get hashCode {
-    return $jf(
-        $jc($jc($jc(0, url.hashCode), position.hashCode), isPlaying.hashCode));
+    return $jf($jc(
+        $jc($jc($jc(0, id.hashCode), url.hashCode), position.hashCode),
+        isPlaying.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('VideoControllerState')
+          ..add('id', id)
           ..add('url', url)
           ..add('position', position)
           ..add('isPlaying', isPlaying))
@@ -205,6 +219,10 @@ class _$VideoControllerState extends VideoControllerState {
 class VideoControllerStateBuilder
     implements Builder<VideoControllerState, VideoControllerStateBuilder> {
   _$VideoControllerState _$v;
+
+  int _id;
+  int get id => _$this._id;
+  set id(int id) => _$this._id = id;
 
   String _url;
   String get url => _$this._url;
@@ -222,6 +240,7 @@ class VideoControllerStateBuilder
 
   VideoControllerStateBuilder get _$this {
     if (_$v != null) {
+      _id = _$v.id;
       _url = _$v.url;
       _position = _$v.position;
       _isPlaying = _$v.isPlaying;
@@ -247,7 +266,7 @@ class VideoControllerStateBuilder
   _$VideoControllerState build() {
     final _$result = _$v ??
         new _$VideoControllerState._(
-            url: url, position: position, isPlaying: isPlaying);
+            id: id, url: url, position: position, isPlaying: isPlaying);
     replace(_$result);
     return _$result;
   }

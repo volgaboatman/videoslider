@@ -16,6 +16,7 @@ abstract class VideoControllerState
         ..position = 0
         ..url = "");
 
+  int get id;
   String get url;
   double get position;
   bool get isPlaying;

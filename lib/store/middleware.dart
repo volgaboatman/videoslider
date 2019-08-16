@@ -30,6 +30,9 @@ MiddlewareHandler<VideoSliderState, VideoSliderStateBuilder, VideoSliderActions,
       new Timer(Duration(seconds: 5), () {
         api.actions.loaded([
           'assets/butterfly.mp4',
+          'assets/butterfly.mp4',
+          'assets/butterfly.mp4',
+          'assets/butterfly.mp4',
           'https://flutter.github.io/assets-for-api-docs//assets/videos/bee.mp4',
           'https://flutter.github.io/assets-for-api-docs//assets/videos/not-found.mp4',
         ]);

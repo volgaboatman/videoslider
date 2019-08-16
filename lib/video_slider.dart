@@ -21,16 +21,16 @@ class VideoSliderWidget extends StatefulWidget {
 }
 
 class _VideoSliderWidgetState extends State<VideoSliderWidget> {
-  Map<String, ChewieController> controllers;
+  Map<int, ChewieController> controllers;
 
-  ChewieController _getController(String url) {
-    if (controllers.containsKey(url)) return controllers[url];
+  ChewieController _getController(VideoControllerState state) {
+    if (controllers.containsKey(state.id)) return controllers[state.id];
 
-    final newController = (url.startsWith("http"))
-        ? VideoPlayerController.network(url)
-        : VideoPlayerController.asset(url);
+    final newController = (state.url.startsWith("http"))
+        ? VideoPlayerController.network(state.url)
+        : VideoPlayerController.asset(state.url);
     newController.addListener(() => widget.store.actions
-        .controllerChanged(ControllerChanged(url, newController.value)));
+        .controllerChanged(ControllerChanged(state.url, newController.value)));
 
     newController.setLooping(true);
     newController.addListener(
@@ -52,14 +52,14 @@ class _VideoSliderWidgetState extends State<VideoSliderWidget> {
       },
     );
 
-    controllers[url] = chewie;
+    controllers[state.id] = chewie;
     return chewie;
   }
 
   @override
   void initState() {
     super.initState();
-    controllers = new Map<String, ChewieController>();
+    controllers = new Map<int, ChewieController>();
   }
 
   @override
@@ -89,41 +89,60 @@ class _VideoSliderWidgetState extends State<VideoSliderWidget> {
         ),
       );
 
-  Column buildSlider(VideoSliderActions actions, VideoSliderState state) {
-    return Column(
-      children: [
-        CarouselSlider(
-          enableInfiniteScroll: false,
-          onPageChanged: (index) {
-            actions.setPage(index);
-          },
-          items: state.controllers.map((c) {
-            return Builder(
-              builder: (BuildContext context) {
-                return Column(
-                  key: Key(
-                      c.url + c.isPlaying.toString() + state.volume.toString()),
-                  children: <Widget>[
-                    VideoPlayerWidget(
-                        controller: _getController(c.url),
-                        isPlaing: c.isPlaying,
-                        volume: state.volume),
-                  ],
-                );
-              },
-            );
-          }).toList(),
+  Widget buildSlider(VideoSliderActions actions, VideoSliderState state) {
+    return OrientationBuilder(builder: (context, orientation) {
+      final initPage = state.currentPage;
+      var content = [
+        Expanded(
+          flex: 3,
+          child: CarouselSlider(
+            enableInfiniteScroll: false,
+            initialPage: initPage,
+            onPageChanged: (index) {
+              // Очень не тривиальная логика вычисления страницы если есть initialPage, зачем так сделали - не понятно
+              // print("initPage: $initPage, index: $index");
+              actions.setPage((index + initPage) % state.controllers.length);
+            },
+            items: state.controllers.map((c) {
+              return Builder(
+                builder: (BuildContext context) {
+                  return Column(
+                    key: Key(c.id.toString() +
+                        c.isPlaying.toString() +
+                        state.volume.toString()),
+                    children: <Widget>[
+                      VideoPlayerWidget(
+                          controller: _getController(c),
+                          isPlaing: c.isPlaying,
+                          volume: state.volume),
+                    ],
+                  );
+                },
+              );
+            }).toList(),
+          ),
         ),
-        SwitchListTile(
-          title: const Text('mute'),
-          value: state.isMuted,
-          onChanged: (c) => actions.setIsMuted(c),
+        Expanded(
+          flex: 1,
+          child: Column(
+            children: <Widget>[
+              SwitchListTile(
+                title: const Text('mute'),
+                value: state.isMuted,
+                onChanged: (c) => actions.setIsMuted(c),
+              ),
+              Text(
+                'Current page: ${state.currentPage}',
+                style: TextStyle(fontSize: 16.0),
+              )
+            ],
+          ),
         ),
-        Text(
-          'Current page: ${state.currentPage}',
-          style: TextStyle(fontSize: 16.0),
-        )
-      ],
-    );
+      ];
+
+      return orientation == Orientation.portrait
+          ? Column(children: content)
+          : Row(children: content);
+    });
   }
 }
